@@ -27,9 +27,12 @@ app.use((err, req, res, next) => {
 //router imports
 import healthCheckRouter from "./routes/healthcare.routes.js"
 import userRouter from "./routes/auth.routes.js"
+import projectRouter from "./routes/project.routes.js"
 
 app.use('/api/v1/healthcheck', healthCheckRouter)
 app.use('/api/v1/auth', userRouter)
+app.use('/api/v1/project', projectRouter)
+
 
 
 export default app
