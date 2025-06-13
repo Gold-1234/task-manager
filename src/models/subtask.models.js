@@ -1,5 +1,6 @@
 import { Schema } from "mongoose"
-import mongoose from mongoose
+import mongoose from "mongoose"
+import { AvailableTaskStatus, TaskStatusEnum  } from "../utils/constants.js"
 
 const subtaskSchema = new Schema({
 	title: {
@@ -30,4 +31,4 @@ const subtaskSchema = new Schema({
 	timestamps: true
 })
 
-export const subTask = mongoose.model("subTask", subtaskSchema)
+export const SubTask = mongoose.model("subTask", subtaskSchema)

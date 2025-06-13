@@ -1,5 +1,7 @@
 import { Schema } from "mongoose"
-import mongoose from mongoose
+import mongoose from "mongoose"
+import { AvailableTaskStatus } from "../utils/constants.js"
+import { TaskStatusEnum } from "../utils/constants.js"
 
 const TaskSchema = new Schema({
 	title: {
@@ -26,11 +28,13 @@ const TaskSchema = new Schema({
 		ref: "User",
 		required: true
 	},
-	assignedTo: {
-		type: Schema.Types.ObjectId,
-		ref: "User",
-		required: true
-	},
+	assignedTo: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "User",
+			required: true
+		}
+	],
 	attachments: {
 		type: [
 			{
