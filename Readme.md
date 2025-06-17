@@ -132,9 +132,6 @@ For detailed API documentation, including request/response formats and authentic
 - **Lint code:**
   ESLint is configured via `.eslintrc` and Prettier via `.prettierrc`.
 
-## License
-This project is licensed under the ISC License.
-
 ---
 
 For questions or support, please open an issue on the repository.
