@@ -1,6 +1,6 @@
 # Task Manager
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://.postman.co/workspace/My-Workspace~8e34ee0b-2a3b-4de6-82f5-3528760f0bd7/collection/40785574-579929ee-8591-455d-854a-daa680c4e898?action=share&creator=40785574)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://web.postman.co/workspace/My-Workspace~8e34ee0b-2a3b-4de6-82f5-3528760f0bd7/collection/40785574-579929ee-8591-455d-854a-daa680c4e898?action=share&creator=40785574)
 
 A Node.js/Express backend for managing projects, tasks, notes, and users. Includes authentication, file uploads, email notifications, and RESTful APIs. Built with MongoDB, follows best practices, and is ready for production.
 
