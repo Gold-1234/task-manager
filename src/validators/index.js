@@ -14,8 +14,8 @@ const userRegistrationValidator = () => {
       .withMessage("username is required.")
       .isLength({ min: 3 })
       .withMessage("Minimum length required is 3")
-      .isLength({ max: 8 })
-      .withMessage("maxium length cannot exceed 8"),
+      .isLength({ max: 30 })
+      .withMessage("maxium length cannot exceed 30"),
     body("password")
       .trim()
       .notEmpty()

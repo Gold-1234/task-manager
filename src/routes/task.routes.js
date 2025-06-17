@@ -16,50 +16,50 @@ console.log("Incoming route:", req.method, req.originalUrl, req.params);
 });
 taskRouter.route("/").get(verifyJWT, getUserTasks);
 
-taskRouter.route("/:projectId").get(verifyJWT, getTasks);
+taskRouter.route("/:id").get(verifyJWT, getTasks);
 
-taskRouter.route("/:taskId").get(
+taskRouter.route("/:id").get(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.MEMBER, UserRolesEnum.ADMIN]),
     getTaskById,
   );
   
-taskRouter.route("/create/:projectId").post(
+taskRouter.route("/create/:id").post(
   verifyJWT,
   validateProjectPermission([UserRolesEnum.ADMIN]),
   upload.array('attachments', 10),
 	createTask);
 
-taskRouter.route("/update/:taskId").patch(
+taskRouter.route("/update/:id").patch(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     upload.array('attachments', 10),
     updateTask,
   );
 
-taskRouter.route("/delete/:taskId").delete(
+taskRouter.route("/delete/:id").delete(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     deleteTask,
   );
 
-taskRouter.route("/:subtaskId").get(
+taskRouter.route("/:id").get(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.MEMBER, UserRolesEnum.ADMIN]),
     getSubTaskById,
   );
 
-taskRouter.route("/create-subTask/:taskId").post(
+taskRouter.route("/create-subTask/:id").post(
   verifyJWT,
 	createSubTask);
 
-taskRouter.route("/update-subTask/:subtaskId").patch(
+taskRouter.route("/update-subTask/:id").patch(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN, UserRolesEnum.ADMIN]),
     updateSubTask,
   );
 
-taskRouter.route("/delete-subtask/:subtaskId").delete(
+taskRouter.route("/delete-subtask/:id").delete(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     deleteSubTask,

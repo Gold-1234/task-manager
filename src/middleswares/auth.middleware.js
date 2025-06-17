@@ -35,83 +35,72 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
 
 export const validateProjectPermission = (roles = []) => {
   return asyncHandler(async (req, res, next) => {
-    const type = req.query.type
-    
-    let { projectId, taskId, subtaskId, noteId ,objectId } = req.params;
-    
-    if(type == "Project" && objectId){
-      projectId = objectId
-    }
-    else if(type == "Task" && objectId){
-      taskId = objectId
-    }
-    else if(type == "Subtask" && objectId){
-      subtaskId = objectId
-    }
-    else if(type == "Note" && objectId){
-      noteId = objectId
-    }
-    
-    let id = projectId
-    
-    if(taskId){
-      const task = await Task.findById(new mongoose.Types.ObjectId(taskId)).populate("project")
-      if(!task){
-        throw new ApiError(400, 'Task not found')
-      }
-      id = task.project._id
-    }
-    else if(subtaskId){
-      const taskId = await SubTask.findById(new mongoose.Types.ObjectId(subtaskId)).populate("task")
-      if(!taskId){
-        throw new ApiError(400, 'Subtask not found')
-      }
-      id = taskId.task.project
-      console.log(taskId.task.project);
-      
-    }
-    else if(noteId){
-      console.log(noteId);
-      
-      const note = await Note.findById(new mongoose.Types.ObjectId(noteId))
-      
-      if(!note){
-        throw new ApiError(400, 'Note not found')
-      }
-      if(note.model == "Project"){
-        id = note.object
-      }else if(note.model == "Task"){
-        taskId = note.object
-        const task = await Task.findById(new mongoose.Types.ObjectId(taskId)).populate("project")
-        if(!task){
-          throw new ApiError(400, 'Task not found')
-        }
-        id = task.project._id        
-      }
-      
+    const type = req.query.type || req.params.type;
+    const id = req.params.id;
+
+    if (!type || !id) {
+      throw new ApiError(400, 'Type and ID parameters are required');
     }
 
-    const project = await ProjectMember.findOne({
-      project: new mongoose.Types.ObjectId(id),
+    let projectId;
+
+    // Get project ID based on type
+    switch (type.toLowerCase()) {
+      case 'project':
+        projectId = id;
+        break;
+      case 'task':
+        const task = await Task.findById(new mongoose.Types.ObjectId(id))
+          .populate('project');
+        if (!task) {
+          throw new ApiError(400, 'Task not found');
+        }
+        projectId = task.project._id;
+        break;
+      case 'subtask':
+        const subtask = await SubTask.findById(new mongoose.Types.ObjectId(id))
+          .populate('task');
+        if (!subtask) {
+          throw new ApiError(400, 'Subtask not found');
+        }
+        projectId = subtask.task.project._id;
+        break;
+      case 'note':
+        const note = await Note.findById(new mongoose.Types.ObjectId(id));
+        if (!note) {
+          throw new ApiError(400, 'Note not found');
+        }
+        if (note.model === 'Project') {
+          projectId = note.object;
+        } else if (note.model === 'Task') {
+          const task = await Task.findById(new mongoose.Types.ObjectId(note.object))
+            .populate('project');
+          if (!task) {
+            throw new ApiError(400, 'Task not found');
+          }
+          projectId = task.project._id;
+        } else {
+          throw new ApiError(400, 'Invalid note model');
+        }
+        break;
+      default:
+        throw new ApiError(400, 'Invalid type specified');
+    }
+
+    // Check project membership
+    const projectMember = await ProjectMember.findOne({
+      project: new mongoose.Types.ObjectId(projectId),
       user: new mongoose.Types.ObjectId(req.user._id),
     });
 
-    if (!project) {
-      throw new ApiError(400, "Project not found.");
+    if (!projectMember) {
+      throw new ApiError(403, 'You do not have access to this project');
     }
 
-    const givenRole = project?.role;
-
-    req.user.role = givenRole;
-
-    if (!roles.includes(givenRole)) {
-      console.log(givenRole);
-
-      throw new ApiError(
-        403,
-        "You do not have permission to access this content.",
-        [givenRole],
-      );
+    // Set user role and check permissions
+    req.user.role = projectMember.role;
+    if (!roles.includes(projectMember.role)) {
+      throw new ApiError(403, 'You do not have permission to access this content', [projectMember.role]);
     }
 
     next();

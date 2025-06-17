@@ -1,16 +1,20 @@
 import { Note } from "../models/note.models.js"
-import { Task    } from "../models/task.models.js"
+import { Task } from "../models/task.models.js"
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
-import { authorizeNote } from "../utils/noteValidator.js";
 import mongoose from "mongoose";
 import { ProjectMember } from "../models/projectmember.models.js";
 
 const getNotes = async (req, res) => {
   const id = req.params.id;
-  const getNotes = await Note.find({parent: id})
+  const type = req.query.type;
 
-  const notes = authorizeNote(getNotes, req.user.id);
+  if(!['Project', 'Task'].includes(type)){
+    throw new ApiError(400, "Invalid type specified");
+  }
+
+  const notes = await Note.find({object: id, model: type});
+  
 
   return res.status(200).json(
     new ApiResponse(200, "Notes fetched successfully.", notes)

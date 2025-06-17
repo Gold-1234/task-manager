@@ -13,6 +13,6 @@ export const validate = (req, res, next) => {
       [err.path]: err.msg,
     }),
   );
-
+  console.log(extractedErrors);
   throw new ApiError(422, "Recieved data not valid", extractedErrors);
 };

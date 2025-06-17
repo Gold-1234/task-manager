@@ -28,7 +28,7 @@ projectRouter.route("/").get(verifyJWT, validateProjectPermission([UserRolesEnum
 projectRouter.route("/myProjects").get(verifyJWT, getProjectsByUser);
 
 projectRouter
-  .route("/:projectId")
+  .route("/:id")
   .get(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.MEMBER, UserRolesEnum.ADMIN]),
@@ -36,42 +36,42 @@ projectRouter
   );
 projectRouter.route("/create").post(verifyJWT, createProject);
 projectRouter
-  .route("/update/:projectId")
+  .route("/update/:id")
   .patch(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     updateProject,
   );
 projectRouter
-  .route("/delete/:projectId")
+  .route("/delete/:id")
   .delete(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     deleteProject,
   );
 projectRouter
-  .route("/members/:projectId")
+  .route("/members/:id")
   .get(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN, UserRolesEnum.MEMBER]),
     getProjectMembers,
   );
 projectRouter
-  .route("/add_member/:projectId")
+  .route("/add_member/:id")
   .post(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     addMemberToProject,
   );
 projectRouter
-  .route("/delete_member/:projectId")
+  .route("/delete_member/:id")
   .delete(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
     deleteMember,
   );
 projectRouter
-  .route("/update_role/:projectId")
+  .route("/update_role/:id")
   .patch(
     verifyJWT,
     validateProjectPermission([UserRolesEnum.ADMIN]),
