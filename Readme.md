@@ -70,7 +70,7 @@ task_manager/
 ## Installation & Setup
 1. **Clone the repository:**
    ```bash
-   git clone <repo-url>
+   git clone "https://github.com/Gold-1234/task-manager"
    cd task_manager
    ```
 2. **Install dependencies:**
