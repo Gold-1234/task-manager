@@ -1,0 +1,939 @@
+{
+	"info": {
+		"_postman_id": "579929ee-8591-455d-854a-daa680c4e898",
+		"name": "Task Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40785574"
+	},
+	"item": [
+		{
+			"name": "Health check",
+			"item": [
+				{
+					"name": "healthcheckroute",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/healthcheck/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random email and password",
+									"const randomNum = Math.floor(Math.random() * 100000);",
+									"const email = `testuser${randomNum}@mail.com`;",
+									"const password = `Test@${randomNum}`;",
+									"",
+									"// Save to environment variables",
+									"pm.environment.set(\"email\", email);",
+									"pm.environment.set(\"password\", password);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"const cookies = pm.cookies.toObject();",
+									"console.log(res.data.verificationURL)",
+									"console.log(pm.request.body)",
+									"pm.environment.set(\"verificationURL\", res.data.verificationURL);",
+									"console.log(pm.environment.get(\"verificationURL\"))",
+									"pm.execution.setNextRequest(\"verify email\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"fullname\": \"{{$randomFullName}}\",\n    \"username\": \"{{$randomUserName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/auth/register/"
+					},
+					"response": [
+						{
+							"name": "register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \n    \"fullname\": \"Kunal\",\n    \"username\": \"Kunal\",\n    \"email\": \"kunal@gmail.com\",\n    \"password\": \"Kunal@1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/api/v1/auth/register/"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \n    \"fullname\": \"Rishika Kumari\",\n    \"username\": \"Rishika\",\n    \"email\": \"Rishikakumari0926@gmail.com\",\n    \"password\": \"Rishika@1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/api/v1/auth/egister/"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "verify email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.execution.setNextRequest(\"reset password email\")",
+									"pm.execution.setNextRequest(\"login\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"email\": \"{{email}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{verificationURL}}"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"const cookies = pm.cookies.toObject();",
+									"// Save access token to environment",
+									"pm.environment.set(\"accessToken\", cookies.accessToken);",
+									"pm.environment.set(\"refreshToken\", res.data.refreshToken);",
+									"",
+									"// Save user ID if needed",
+									"pm.environment.set(\"userId\", res.data._id);",
+									"pm.enviroment.set(\"user\", res.data);",
+									"pm.setNextRequest(\"resend verification email\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"email\": {{email}},\n    \"password\": {{password}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/auth/login/"
+					},
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \n    \"email\": \"Rishikakumari0926@gmail.com\",\n    \"password\": \"Rishika@1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/api/v1/auth/login/"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \n    \"email\": \"gold.1764i@gmail.com\",\n    \"password\": \"Goldi@1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/api/v1/auth/login/"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "resend verification email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 401) {",
+									"  console.log(\"Access token expired. Refreshing...\");",
+									"",
+									"  // Store the name of the current request",
+									"  pm.environment.set(\"lastRequest\", req.name);",
+									"",
+									"  // Go to refresh",
+									"  pm.setNextRequest(\"refresh access token\")",
+									"}",
+									"pm.setNextRequest(\"verify email\")",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{user.email}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8000/api/v1/auth/resend-email/"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/auth/logout/"
+					},
+					"response": []
+				},
+				{
+					"name": "reset password email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"// Save access token to environment",
+									"pm.environment.set(\"resetPasswordURL\", res.data.forgotPasswordURL);",
+									"pm.next"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": {{user.email}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/auth/reset-password/"
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.setNextRequest(\"change password\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": {{email}},\n    \"newPassword\": {{password}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{resetPasswordURL}}"
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/auth/change-password/"
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.setNextRequest(\"create project\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/auth/user/"
+					},
+					"response": []
+				},
+				{
+					"name": "refresh access token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"",
+									"if(res.newAccessToken){",
+									"    pm.environment.set(\"accessToken\", res.newAccessToken);",
+									"",
+									"    const retryRequest = pm.environment.get(\"lastRequest\")",
+									"    if(retryRequest){",
+									"        pm.setNextRequest(retryRequest)",
+									"    }",
+									"    pm.setNextRequest(null)",
+									"}",
+									"pm.setNextRequest(null)",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/auth/refreshToken/"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/api/v1/auth/register/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.variables.get(\"variable_key\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"fullname\": \"Kunal\",\n    \"username\": \"Kunal\",\n    \"email\": \"kunal@gmail.com\",\n    \"password\": \"Kunal@1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/auth/register/"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/api/v1/auth/change-password/",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/auth/change-password/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "create project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.respnse.json();",
+									"pm.enviroment.set(\"projectId\", res.data._id)",
+									"pm.setNextRequest(\"get project by id\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {{$randomCatchPhrase}},\n    \"description\": \"{{$randomCatchPhraseDescriptor}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/project/create"
+					},
+					"response": []
+				},
+				{
+					"name": "update project",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Project Manager\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/project/update/684ac8f2517c9c599113de3c"
+					},
+					"response": []
+				},
+				{
+					"name": "get project by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/project/684ac8f2517c9c599113de3c"
+					},
+					"response": []
+				},
+				{
+					"name": "get members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/project/members/{{projectId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "get projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/project/"
+					},
+					"response": []
+				},
+				{
+					"name": "add member",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"684ac9c6517c9c599113de49\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/project/add_member/684ac8f2517c9c599113de3c"
+					},
+					"response": []
+				},
+				{
+					"name": "update role",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"admin\",\n    \"user\": \"68491a64b009f0cd0f4a5a90\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/project/update_role/684ac8f2517c9c599113de3c"
+					},
+					"response": []
+				},
+				{
+					"name": "delete member",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"684ac9c6517c9c599113de49\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/project/delete_member/684ac8f2517c9c599113de3c"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "get user Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/task/"
+					},
+					"response": []
+				},
+				{
+					"name": "create task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "pvt task by goldi",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "none",
+									"type": "text"
+								},
+								{
+									"key": "assignedTo",
+									"value": "68491a64b009f0cd0f4a5a90",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": [
+										"/Users/goldikumari/Desktop/cohort/task_manager/src/models/user.models.js",
+										"/Users/goldikumari/Desktop/cohort/task_manager/src/models/project.models.js"
+									]
+								}
+							]
+						},
+						"url": "http://localhost:8000/api/v1/task/create/684c0ae0560b08d71326c647"
+					},
+					"response": []
+				},
+				{
+					"name": "update task",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": "/Users/goldikumari/Desktop/cohort/task_manager/src/models/note.models.js"
+								},
+								{
+									"key": "ddescription",
+									"value": "note model udpated",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8000/api/v1/task/update/684bdcbcfe85a1530c1d2efd"
+					},
+					"response": []
+				},
+				{
+					"name": "delete task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"684ac9c6517c9c599113de49\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/api/v1/task/delete/684c0b84ba9a40f29d8e9b57"
+					},
+					"response": []
+				},
+				{
+					"name": "get task by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/task/684bdcbcfe85a1530c1d2efd"
+					},
+					"response": []
+				},
+				{
+					"name": "get subtask by id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "create subtask",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "this is a subtask - Kunal",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "description",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8000/api/v1/task/create-subtask/684c0d19b4b31e97fa11d6ec"
+					},
+					"response": []
+				},
+				{
+					"name": "update subtask",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "description",
+									"value": "updated description",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8000/api/v1/task/update-subtask/684c0efcf6cf4bcb0efc67b2"
+					},
+					"response": []
+				},
+				{
+					"name": "delete subtask",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8000/api/v1/task/delete-subtask/684c0efcf6cf4bcb0efc67b2"
+					},
+					"response": []
+				},
+				{
+					"name": "get project tasks",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Note",
+			"item": [
+				{
+					"name": "create note",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "content",
+									"value": "this is a pvt note by goldi",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/note/create-note/684c0ae0560b08d71326c647?type=Project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"note",
+								"create-note",
+								"684c0ae0560b08d71326c647"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Project"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete note",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/v1/note/delete/684c20e4afd846e653d138dc?type=Note",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"note",
+								"delete",
+								"684c20e4afd846e653d138dc"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Note"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/v1/note/684c0ae0560b08d71326c647?type=Project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"note",
+								"684c0ae0560b08d71326c647"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Project"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get note by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/v1/note/id/684c2d91abdc56a87c0f82c3?type=Project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"note",
+								"id",
+								"684c2d91abdc56a87c0f82c3"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Project"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update note",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"new content before\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/note/update/684c1a52b1f8b2271c299fa0?type=Project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"note",
+								"update",
+								"684c1a52b1f8b2271c299fa0"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Project"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
