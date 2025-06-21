@@ -1,5 +1,28 @@
 # Task Manager
 
+A web-based task management application designed for both individuals and teams. Manage your projects and tasks efficiently by assigning work, attaching files, and keeping notes. The app supports collaborative as well as private workflows.
+
+## Features
+
+- **Projects & Tasks:**  
+  - Create and manage multiple projects.
+  - Add tasks to projects, assign them to team members.
+  - Tasks can have subtasks.
+  - **Subtasks:** Break down complex tasks into smaller subtasks, each with its own title and description, for more granular tracking and management.
+
+- **Notes:**  
+  - Attach notes to projects and tasks.
+  - Admin-created notes are visible to everyone.
+  - Member-created notes are private to the creator.
+  - Notes can only be edited by the member who created them.
+
+- **Attachments:**  
+  - Projects and tasks can have file attachments for easy reference and collaboration.
+
+- **Permissions:**  
+  - Only admins can edit project details and public notes.
+  - Members can edit only the notes they have created.
+
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://web.postman.co/workspace/My-Workspace~8e34ee0b-2a3b-4de6-82f5-3528760f0bd7/collection/40785574-579929ee-8591-455d-854a-daa680c4e898?action=share&creator=40785574)
 
 A Node.js/Express backend for managing projects, tasks, notes, and users. Includes authentication, file uploads, email notifications, and RESTful APIs. Built with MongoDB, follows best practices, and is ready for production.
