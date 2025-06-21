@@ -2,30 +2,7 @@
 
 A web-based task management application designed for both individuals and teams. Manage your projects and tasks efficiently by assigning work, attaching files, and keeping notes. The app supports collaborative as well as private workflows.
 
-## Features
-
-- **Projects & Tasks:**  
-  - Create and manage multiple projects.
-  - Add tasks to projects, assign them to team members.
-  - Tasks can have subtasks.
-  - **Subtasks:** Break down complex tasks into smaller subtasks, each with its own title and description, for more granular tracking and management.
-
-- **Notes:**  
-  - Attach notes to projects and tasks.
-  - Admin-created notes are visible to everyone.
-  - Member-created notes are private to the creator.
-  - Notes can only be edited by the member who created them.
-
-- **Attachments:**  
-  - Projects and tasks can have file attachments for easy reference and collaboration.
-
-- **Permissions:**  
-  - Only admins can edit project details and public notes.
-  - Members can edit only the notes they have created.
-
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://web.postman.co/workspace/My-Workspace~8e34ee0b-2a3b-4de6-82f5-3528760f0bd7/collection/40785574-579929ee-8591-455d-854a-daa680c4e898?action=share&creator=40785574)
-
-A Node.js/Express backend for managing projects, tasks, notes, and users. Includes authentication, file uploads, email notifications, and RESTful APIs. Built with MongoDB, follows best practices, and is ready for production.
 
 ---
 
@@ -48,16 +25,29 @@ A Node.js/Express backend for managing projects, tasks, notes, and users. Includ
 
 Task Manager is a backend service for managing users, projects, tasks, and notes. It supports user authentication, project collaboration, task assignment, note-taking, file uploads (via Cloudinary), and email notifications. Designed for scalability and maintainability.
 
-## Features
-- User authentication (JWT, bcrypt)
-- Project, task, and note CRUD operations
-- Project membership management
-- File uploads (Cloudinary)
-- Email notifications (Mailgen, Nodemailer)
-- RESTful API endpoints
-- Input validation and error handling
-- Environment-based configuration
-- Testing with Jest & Supertest
+## ✨ Features
+
+### 🗂️ Projects & Tasks
+- Create and manage multiple projects.
+- Add tasks to projects and assign them to team members.
+- Tasks can include **subtasks** for better breakdown and tracking.
+
+### ✅ Subtasks
+- Break down complex tasks into smaller units.
+- Each subtask has its own title and description.
+
+### 📝 Notes
+- Attach notes to projects and tasks.
+- **Admin-created notes** are visible to all members.
+- **Member-created notes** are private to the creator.
+- Only the creator can edit their notes.
+
+### 📎 Attachments
+- Attach files to projects and tasks using Cloudinary.
+
+### 🔐 Permissions
+- **Admins** can edit project details and public notes.
+- **Members** can only edit the notes they’ve created.
 
 ## Tech Stack
 - **Node.js** / **Express.js**
